@@ -463,7 +463,7 @@ function renderStartScreen(ctx, tick) {
   // 7. Start button
   const scale = 1 + Math.sin(tick * 3) * 0.03
   ctx.save()
-  ctx.translate(CANVAS_W / 2, 470)
+  ctx.translate(CANVAS_W / 2, 450)
   ctx.scale(scale, scale)
   ctx.shadowBlur = 20
   ctx.shadowColor = '#FF91A4'
@@ -474,7 +474,7 @@ function renderStartScreen(ctx, tick) {
   ctx.font = 'bold 20px Georgia'
   ctx.fillStyle = '#FFFFFF'
   ctx.textAlign = 'center'
-  ctx.fillText('Começar 💕', 0, 8)
+  ctx.fillText('Começar 💕', 0, 7)
   ctx.restore()
 
   // Botão fullscreen
@@ -484,15 +484,14 @@ function renderStartScreen(ctx, tick) {
   ctx.fillText('⛶', CANVAS_W - 20, CANVAS_H - 16)
 }
 
-const START_BTN = { x: CANVAS_W / 2 - 100, y: 416, w: 200, h: 48 }
-
 function handleStartClick(mx, my) {
-  console.log('click:', mx, my)
-  const btnX = CANVAS_W / 2 - 100
-  const btnY = 416
-  const btnW = 200
-  const btnH = 48
-  console.log('botão bounds:', btnX, btnY, btnX + btnW, btnY + btnH)
+  const btnCX = CANVAS_W / 2
+  const btnCY = 450
+  const btnW  = 200
+  const btnH  = 48
+  const btnX  = btnCX - btnW / 2
+  const btnY  = btnCY - btnH / 2
+
   if (mx >= btnX && mx <= btnX + btnW && my >= btnY && my <= btnY + btnH) {
     initAudio()
     initGame()
