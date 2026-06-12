@@ -18,7 +18,7 @@ let winShowButtonTimer = 0
 let pauseScreen = {
   active: false,
   timer: 0,
-  duration: 2.2,
+  duration: 4.0,
   name: '',
   index: 0,
   isLiam: false
@@ -430,7 +430,7 @@ function renderStartScreen(ctx, tick) {
 
   // Bilhetinho
   const noteX = CANVAS_W / 2 - 280
-  const noteY = 390
+  const noteY = 420
   ctx.save()
   ctx.translate(CANVAS_W / 2, noteY + 36)
   ctx.rotate(-0.012)
@@ -463,7 +463,7 @@ function renderStartScreen(ctx, tick) {
   // 7. Start button
   const scale = 1 + Math.sin(tick * 3) * 0.03
   ctx.save()
-  ctx.translate(CANVAS_W / 2, 450)
+  ctx.translate(CANVAS_W / 2, 540)
   ctx.scale(scale, scale)
   ctx.shadowBlur = 20
   ctx.shadowColor = '#FF91A4'
@@ -486,7 +486,7 @@ function renderStartScreen(ctx, tick) {
 
 function handleStartClick(mx, my) {
   const btnCX = CANVAS_W / 2
-  const btnCY = 450
+  const btnCY = 540
   const btnW  = 200
   const btnH  = 48
   const btnX  = btnCX - btnW / 2
