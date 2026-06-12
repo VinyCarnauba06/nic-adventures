@@ -426,7 +426,7 @@ function renderStartScreen(ctx, tick) {
   // 5. Subtitle
   ctx.font = '18px Georgia'
   ctx.fillStyle = '#8B3A62'
-  ctx.fillText('Colete os 5 pitorros especiais e esmagre todos os haters para descobrir seu presente, Amor!', CANVAS_W / 2, 220)
+  ctx.fillText('Colete os 5 pitorros especiais e esmague todos os haters para descobrir seu presente, Amor!', CANVAS_W / 2, 220)
 
   // Bilhetinho
   const noteX = CANVAS_W / 2 - 280
@@ -487,8 +487,13 @@ function renderStartScreen(ctx, tick) {
 const START_BTN = { x: CANVAS_W / 2 - 100, y: 416, w: 200, h: 48 }
 
 function handleStartClick(mx, my) {
-  if (mx >= START_BTN.x && mx <= START_BTN.x + START_BTN.w &&
-    my >= START_BTN.y && my <= START_BTN.y + START_BTN.h) {
+  console.log('click:', mx, my)
+  const btnX = CANVAS_W / 2 - 100
+  const btnY = 416
+  const btnW = 200
+  const btnH = 48
+  console.log('botão bounds:', btnX, btnY, btnX + btnW, btnY + btnH)
+  if (mx >= btnX && mx <= btnX + btnW && my >= btnY && my <= btnY + btnH) {
     initAudio()
     initGame()
     gameState = STATE.PLAYING

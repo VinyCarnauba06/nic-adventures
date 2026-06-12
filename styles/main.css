@@ -4,35 +4,28 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   background: #1a0010;
+}
+
+body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  overflow: hidden;
-  font-family: Georgia, serif;
 }
 
 #game-wrapper {
   position: relative;
-  width: 1280px;
-  height: 720px;
-  box-shadow: 0 0 60px #E91E8C44;
+  width: 100vw;
+  height: 100vh;
 }
 
 #gameCanvas {
   display: block;
-  width: 1280px;
-  height: 720px;
-  cursor: default;
-}
-
-#gameCanvas:-webkit-full-screen {
-  width: 100vw;
-  height: 100vh;
-}
-#gameCanvas:fullscreen {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
 }

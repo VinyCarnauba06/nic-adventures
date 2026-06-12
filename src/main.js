@@ -27,32 +27,15 @@ window.addEventListener('keydown', e => {
 window.addEventListener('keyup', e => keys.delete(e.code))
 
 canvas.addEventListener('click', e => {
-  const rect = canvas.getBoundingClientRect()
+  const rect   = canvas.getBoundingClientRect()
   const scaleX = CANVAS_W / rect.width
   const scaleY = CANVAS_H / rect.height
-  const mx = (e.clientX - rect.left) * scaleX
-  const my = (e.clientY - rect.top)  * scaleY
-
-  // Clique no botão fullscreen (canto inferior direito)
-  if (mx > CANVAS_W - 40 && my > CANVAS_H - 40) {
-    if (!document.fullscreenElement) {
-      canvas.requestFullscreen()
-    } else {
-      document.exitFullscreen()
-    }
-    return
-  }
+  const mx     = (e.clientX - rect.left) * scaleX
+  const my     = (e.clientY - rect.top)  * scaleY
 
   if (gameState === STATE.START)    handleStartClick(mx, my)
   if (gameState === STATE.WIN)      handleWinClick(mx, my)
   if (gameState === STATE.GAMEOVER) handleGameOverClick(mx, my)
-
-  // Mute button: top-right, ~32x32 at (CANVAS_W-60, 6) → center CANVAS_W-28
-  if (gameState === STATE.PLAYING || gameState === STATE.GAMEOVER) {
-    if (mx >= CANVAS_W - 60 && mx <= CANVAS_W - 4 && my >= 4 && my <= 40) {
-      toggleMute()
-    }
-  }
 })
 
 function initGame() {
