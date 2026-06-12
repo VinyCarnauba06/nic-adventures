@@ -27,3 +27,12 @@ body {
   height: 720px;
   cursor: default;
 }
+
+#gameCanvas:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+}
+#gameCanvas:fullscreen {
+  width: 100vw;
+  height: 100vh;
+}

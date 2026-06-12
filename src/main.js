@@ -33,6 +33,16 @@ canvas.addEventListener('click', e => {
   const mx = (e.clientX - rect.left) * scaleX
   const my = (e.clientY - rect.top)  * scaleY
 
+  // Clique no botão fullscreen (canto inferior direito)
+  if (mx > CANVAS_W - 40 && my > CANVAS_H - 40) {
+    if (!document.fullscreenElement) {
+      canvas.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+    return
+  }
+
   if (gameState === STATE.START)    handleStartClick(mx, my)
   if (gameState === STATE.WIN)      handleWinClick(mx, my)
   if (gameState === STATE.GAMEOVER) handleGameOverClick(mx, my)
@@ -66,6 +76,7 @@ function update(dt) {
       updatePlayer(dt, keys)
       updateEnemies(dt)
       updateCollectables()
+      checkWinCondition()
     }
     updatePauseScreen(dt)
     updateParticles(dt)

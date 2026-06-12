@@ -3,7 +3,7 @@
 // ─── SHARED CONSTANTS (declared first so all modules can read them) ───────────
 const CANVAS_W = 1280
 const CANVAS_H = 720
-const WORLD_W  = 4200
+const WORLD_W  = 5500
 const STATE    = { START: 0, PLAYING: 1, WIN: 2, GAMEOVER: 3 }
 
 /** @type {AudioContext|null} */

@@ -426,7 +426,7 @@ function renderStartScreen(ctx, tick) {
   // 5. Subtitle
   ctx.font = '18px Georgia'
   ctx.fillStyle = '#8B3A62'
-  ctx.fillText('Colete os 5 pitorros de coco para descobrir seu presente, Amor!', CANVAS_W / 2, 220)
+  ctx.fillText('Colete os 5 pitorros especiais e esmagre todos os haters para descobrir seu presente, Amor!', CANVAS_W / 2, 220)
 
   // Bilhetinho
   const noteX = CANVAS_W / 2 - 280
@@ -476,6 +476,12 @@ function renderStartScreen(ctx, tick) {
   ctx.textAlign = 'center'
   ctx.fillText('Começar 💕', 0, 8)
   ctx.restore()
+
+  // Botão fullscreen
+  ctx.font = '22px Arial'
+  ctx.fillStyle = 'rgba(194, 24, 91, 0.6)'
+  ctx.textAlign = 'right'
+  ctx.fillText('⛶', CANVAS_W - 20, CANVAS_H - 16)
 }
 
 const START_BTN = { x: CANVAS_W / 2 - 100, y: 416, w: 200, h: 48 }

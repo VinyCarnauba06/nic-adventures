@@ -46,7 +46,7 @@ function renderToasts(ctx) {
 function renderHUD(ctx) {
   // 1. HUD background bar
   ctx.fillStyle = 'rgba(255,255,255,0.72)'
-  ctx.fillRect(0, 0, CANVAS_W, 44)
+  ctx.fillRect(0, 0, CANVAS_W, 64)
 
   // 2. Pitorro counter
   ctx.font = 'bold 16px Georgia'
@@ -60,6 +60,14 @@ function renderHUD(ctx) {
     ctx.fillStyle = collectables[i].collected ? '#FF91A4' : '#DDDDDD'
     ctx.fill()
   }
+
+  // 2b. Hater counter
+  const defeated = enemies.filter(e => !e.alive).length
+  const total    = enemies.length
+  ctx.font = 'bold 14px Georgia'
+  ctx.fillStyle = '#9B7FBF'
+  ctx.textAlign = 'left'
+  ctx.fillText(`👊 ${defeated}/${total} haters`, 16, 52)
 
   // 3. HP hearts
   for (let i = 0; i < 3; i++) {

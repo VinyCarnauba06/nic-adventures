@@ -1,6 +1,6 @@
 // src/world.js
 
-const CHECKPOINT_XS = [1400, 2800]
+const CHECKPOINT_XS = [1800, 3600]
 
 // ─── CAMERA ───────────────────────────────────────────────────────────────────
 const camera = { x: 0 }
@@ -23,40 +23,52 @@ function updateCamera(dt) {
 
 /** @type {Platform[]} */
 const platforms = [
-  { x: 0,    y: 660, w: 4200, h: 60,  color: '#FF91A4' },
+  { x: 0,    y: 660, w: 5500, h: 60,  color: '#FF91A4' },
 
-  // Zone 1 (0–1000)
-  { x: 180,  y: 570, w: 150, h: 20, color: '#FFB6C1' },
-  { x: 380,  y: 510, w: 140, h: 20, color: '#C9B1E8' },
-  { x: 580,  y: 550, w: 160, h: 20, color: '#B5EAD7' },
-  { x: 780,  y: 480, w: 140, h: 20, color: '#FFB6C1' },
-  { x: 950,  y: 530, w: 130, h: 20, color: '#C9B1E8' },
+  // Zone 1 (0–1100)
+  { x: 160,  y: 580, w: 140, h: 20, color: '#FFB6C1' },
+  { x: 320,  y: 530, w: 120, h: 20, color: '#C9B1E8' },
+  { x: 480,  y: 570, w: 150, h: 20, color: '#B5EAD7' },
+  { x: 660,  y: 500, w: 130, h: 20, color: '#FFB6C1' },
+  { x: 820,  y: 545, w: 140, h: 20, color: '#C9B1E8' },
+  { x: 980,  y: 480, w: 120, h: 20, color: '#B5EAD7' },
 
-  // Zone 2 (1000–2000)
-  { x: 1100, y: 470, w: 160, h: 20, color: '#B5EAD7' },
-  { x: 1300, y: 420, w: 140, h: 20, color: '#FFB6C1' },
-  { x: 1480, y: 480, w: 150, h: 20, color: '#C9B1E8' },
-  { x: 1660, y: 400, w: 160, h: 20, color: '#B5EAD7' },
-  { x: 1840, y: 450, w: 130, h: 20, color: '#FFB6C1' },
-  { x: 2000, y: 380, w: 150, h: 20, color: '#C9B1E8' },
+  // Zone 2 (1100–2200)
+  { x: 1100, y: 530, w: 150, h: 20, color: '#FFB6C1' },
+  { x: 1270, y: 460, w: 140, h: 20, color: '#C9B1E8' },
+  { x: 1430, y: 510, w: 130, h: 20, color: '#B5EAD7' },
+  { x: 1600, y: 440, w: 150, h: 20, color: '#FFB6C1' },
+  { x: 1770, y: 490, w: 120, h: 20, color: '#C9B1E8' },
+  { x: 1930, y: 420, w: 140, h: 20, color: '#B5EAD7' },
+  { x: 2080, y: 470, w: 130, h: 20, color: '#FFB6C1' },
 
-  // Zone 3 (2000–3100)
-  { x: 2160, y: 430, w: 140, h: 20, color: '#B5EAD7' },
-  { x: 2340, y: 360, w: 160, h: 20, color: '#FFB6C1' },
-  { x: 2520, y: 400, w: 130, h: 20, color: '#C9B1E8' },
-  { x: 2700, y: 330, w: 150, h: 20, color: '#B5EAD7' },
-  { x: 2880, y: 370, w: 140, h: 20, color: '#FFB6C1' },
-  { x: 3060, y: 300, w: 160, h: 20, color: '#C9B1E8' },
+  // Zone 3 (2200–3300)
+  { x: 2200, y: 510, w: 140, h: 20, color: '#C9B1E8' },
+  { x: 2370, y: 440, w: 150, h: 20, color: '#B5EAD7' },
+  { x: 2540, y: 490, w: 120, h: 20, color: '#FFB6C1' },
+  { x: 2700, y: 400, w: 140, h: 20, color: '#C9B1E8' },
+  { x: 2870, y: 450, w: 130, h: 20, color: '#B5EAD7' },
+  { x: 3030, y: 380, w: 150, h: 20, color: '#FFB6C1' },
+  { x: 3190, y: 430, w: 120, h: 20, color: '#C9B1E8' },
 
-  // Zone 4 (3100–4200) — reta final
-  { x: 3220, y: 350, w: 130, h: 20, color: '#B5EAD7' },
-  { x: 3380, y: 290, w: 150, h: 20, color: '#FFB6C1' },
-  { x: 3540, y: 330, w: 120, h: 20, color: '#C9B1E8' },
-  { x: 3700, y: 270, w: 140, h: 20, color: '#B5EAD7' },
-  { x: 3860, y: 300, w: 120, h: 20, color: '#FFB6C1' },
-  { x: 4000, y: 240, w: 140, h: 20, color: '#C9B1E8' },
-  // Pedestal final dourado — Liam Payne
-  { x: 4080, y: 210, w: 100, h: 20, color: '#FFD700' },
+  // Zone 4 (3300–4400)
+  { x: 3320, y: 470, w: 140, h: 20, color: '#B5EAD7' },
+  { x: 3480, y: 400, w: 130, h: 20, color: '#FFB6C1' },
+  { x: 3640, y: 450, w: 150, h: 20, color: '#C9B1E8' },
+  { x: 3810, y: 370, w: 140, h: 20, color: '#B5EAD7' },
+  { x: 3970, y: 420, w: 120, h: 20, color: '#FFB6C1' },
+  { x: 4130, y: 350, w: 140, h: 20, color: '#C9B1E8' },
+  { x: 4290, y: 400, w: 130, h: 20, color: '#B5EAD7' },
+
+  // Zone 5 (4400–5500) — reta final
+  { x: 4420, y: 440, w: 140, h: 20, color: '#FFB6C1' },
+  { x: 4580, y: 370, w: 130, h: 20, color: '#C9B1E8' },
+  { x: 4740, y: 410, w: 150, h: 20, color: '#B5EAD7' },
+  { x: 4900, y: 340, w: 140, h: 20, color: '#FFB6C1' },
+  { x: 5060, y: 380, w: 120, h: 20, color: '#C9B1E8' },
+  { x: 5200, y: 300, w: 140, h: 20, color: '#B5EAD7' },
+  // Pedestal dourado final
+  { x: 5360, y: 260, w: 110, h: 20, color: '#FFD700' },
 ]
 
 function getPlatforms() { return platforms }
@@ -73,22 +85,29 @@ function getPlatforms() { return platforms }
 
 /** @type {Collectable[]} */
 const collectables = [
-  // ── Pitorros normais (não contam pro win)
-  { x: 280,  y: 620, name: '',                collected: false, isLiam: false, special: false },
-  { x: 590,  y: 510, name: '',                collected: false, isLiam: false, special: false },
-  { x: 960,  y: 490, name: '',                collected: false, isLiam: false, special: false },
-  { x: 1310, y: 380, name: '',                collected: false, isLiam: false, special: false },
-  { x: 1850, y: 410, name: '',                collected: false, isLiam: false, special: false },
-  { x: 2530, y: 360, name: '',                collected: false, isLiam: false, special: false },
-  { x: 3070, y: 260, name: '',                collected: false, isLiam: false, special: false },
-  { x: 3710, y: 230, name: '',                collected: false, isLiam: false, special: false },
+  // Pitorros normais
+  { x: 240,  y: 630, name: '', collected: false, isLiam: false, special: false },
+  { x: 490,  y: 530, name: '', collected: false, isLiam: false, special: false },
+  { x: 700,  y: 460, name: '', collected: false, isLiam: false, special: false },
+  { x: 990,  y: 440, name: '', collected: false, isLiam: false, special: false },
+  { x: 1280, y: 420, name: '', collected: false, isLiam: false, special: false },
+  { x: 1610, y: 400, name: '', collected: false, isLiam: false, special: false },
+  { x: 1940, y: 380, name: '', collected: false, isLiam: false, special: false },
+  { x: 2380, y: 400, name: '', collected: false, isLiam: false, special: false },
+  { x: 2710, y: 360, name: '', collected: false, isLiam: false, special: false },
+  { x: 3040, y: 340, name: '', collected: false, isLiam: false, special: false },
+  { x: 3490, y: 360, name: '', collected: false, isLiam: false, special: false },
+  { x: 3820, y: 330, name: '', collected: false, isLiam: false, special: false },
+  { x: 4140, y: 310, name: '', collected: false, isLiam: false, special: false },
+  { x: 4590, y: 330, name: '', collected: false, isLiam: false, special: false },
+  { x: 4910, y: 300, name: '', collected: false, isLiam: false, special: false },
 
-  // ── Pitorros especiais (contam pro win condition)
-  { x: 450,  y: 470, name: 'Harry Styles',    collected: false, isLiam: false, special: true  },
-  { x: 1170, y: 430, name: 'Zayn Malik',      collected: false, isLiam: false, special: true  },
-  { x: 1960, y: 340, name: 'Niall Horan',     collected: false, isLiam: false, special: true  },
-  { x: 2870, y: 330, name: 'Louis Tomlinson', collected: false, isLiam: false, special: true  },
-  { x: 4110, y: 160, name: 'Liam Payne',      collected: false, isLiam: true,  special: true  },
+  // Pitorros especiais (membros do 1D)
+  { x: 500,  y: 490, name: 'Harry Styles',    collected: false, isLiam: false, special: true },
+  { x: 1440, y: 470, name: 'Zayn Malik',      collected: false, isLiam: false, special: true },
+  { x: 2550, y: 450, name: 'Niall Horan',     collected: false, isLiam: false, special: true },
+  { x: 3820, y: 390, name: 'Louis Tomlinson', collected: false, isLiam: false, special: true },
+  { x: 5390, y: 210, name: 'Liam Payne',      collected: false, isLiam: true,  special: true },
 ]
 
 let collectedCount = 0
@@ -115,16 +134,29 @@ function updateCollectables() {
       )
       showCollectPause(c.name, collectedCount, c.isLiam)
       triggerFlash('#FFFFFF', 0.12)
-      if (collectedCount >= 5) {
-        gameState = STATE.WIN
-        winTimer  = 0
-        playSound('win')
-      }
     } else {
       showToast('Pitorro coletado! 🐾', '#FFB6C1', 1.2)
       triggerFlash('#FFFFFF', 0.08)
     }
   })
+}
+
+function allEnemiesDefeated() {
+  return enemies.every(e => !e.alive)
+}
+
+function allSpecialsCollected() {
+  return collectables
+    .filter(c => c.special)
+    .every(c => c.collected)
+}
+
+function checkWinCondition() {
+  if (allSpecialsCollected() && allEnemiesDefeated()) {
+    gameState = STATE.WIN
+    winTimer  = 0
+    playSound('win')
+  }
 }
 
 // ─── ENEMIES ──────────────────────────────────────────────────────────────────
@@ -143,13 +175,16 @@ function updateCollectables() {
 
 /** @type {Enemy[]} */
 const enemies = [
-  { x: 390,  y: 620, w: 32, h: 32, vx:  80, patrolLeft: 310,  patrolRight: 520,  alive: true, squashTimer: 0, shakeTimer: 0 },
-  { x: 800,  y: 620, w: 32, h: 32, vx: -80, patrolLeft: 700,  patrolRight: 900,  alive: true, squashTimer: 0, shakeTimer: 0 },
-  { x: 1120, y: 430, w: 32, h: 32, vx:  80, patrolLeft: 1040, patrolRight: 1220, alive: true, squashTimer: 0, shakeTimer: 0 },
-  { x: 1670, y: 440, w: 32, h: 32, vx: -80, patrolLeft: 1580, patrolRight: 1780, alive: true, squashTimer: 0, shakeTimer: 0 },
-  { x: 2350, y: 320, w: 32, h: 32, vx:  80, patrolLeft: 2260, patrolRight: 2460, alive: true, squashTimer: 0, shakeTimer: 0 },
-  { x: 3070, y: 260, w: 32, h: 32, vx: -80, patrolLeft: 2980, patrolRight: 3180, alive: true, squashTimer: 0, shakeTimer: 0 },
-  { x: 3870, y: 260, w: 32, h: 32, vx:  80, patrolLeft: 3780, patrolRight: 3960, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 330,  y: 625, w: 32, h: 32, vx:  80, patrolLeft: 240,  patrolRight: 450,  alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 670,  y: 465, w: 32, h: 32, vx: -80, patrolLeft: 580,  patrolRight: 760,  alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 1110, y: 495, w: 32, h: 32, vx:  80, patrolLeft: 1020, patrolRight: 1200, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 1610, y: 405, w: 32, h: 32, vx: -80, patrolLeft: 1520, patrolRight: 1720, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 1940, y: 385, w: 32, h: 32, vx:  80, patrolLeft: 1850, patrolRight: 2050, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 2710, y: 365, w: 32, h: 32, vx: -80, patrolLeft: 2620, patrolRight: 2820, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 3200, y: 345, w: 32, h: 32, vx:  80, patrolLeft: 3110, patrolRight: 3300, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 3820, y: 335, w: 32, h: 32, vx: -80, patrolLeft: 3730, patrolRight: 3930, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 4300, y: 365, w: 32, h: 32, vx:  80, patrolLeft: 4210, patrolRight: 4410, alive: true, squashTimer: 0, shakeTimer: 0 },
+  { x: 5070, y: 345, w: 32, h: 32, vx: -80, patrolLeft: 4980, patrolRight: 5180, alive: true, squashTimer: 0, shakeTimer: 0 },
 ]
 
 function updateEnemies(dt) {
@@ -467,19 +502,22 @@ function renderEnemies(ctx, camera, tick) {
 function initWorld() {
   collectedCount = 0
   collectables.forEach(c => c.collected = false)
+  const ENEMY_INIT = [
+    { x: 330,  y: 625, vx:  80 },
+    { x: 670,  y: 465, vx: -80 },
+    { x: 1110, y: 495, vx:  80 },
+    { x: 1610, y: 405, vx: -80 },
+    { x: 1940, y: 385, vx:  80 },
+    { x: 2710, y: 365, vx: -80 },
+    { x: 3200, y: 345, vx:  80 },
+    { x: 3820, y: 335, vx: -80 },
+    { x: 4300, y: 365, vx:  80 },
+    { x: 5070, y: 345, vx: -80 },
+  ]
   enemies.forEach((e, i) => {
-    const init = [
-      { x: 390,  y: 620, vx:  80 },
-      { x: 800,  y: 620, vx: -80 },
-      { x: 1120, y: 430, vx:  80 },
-      { x: 1670, y: 440, vx: -80 },
-      { x: 2350, y: 320, vx:  80 },
-      { x: 3070, y: 260, vx: -80 },
-      { x: 3870, y: 260, vx:  80 },
-    ]
-    e.x           = init[i].x
-    e.y           = init[i].y
-    e.vx          = init[i].vx
+    e.x           = ENEMY_INIT[i].x
+    e.y           = ENEMY_INIT[i].y
+    e.vx          = ENEMY_INIT[i].vx
     e.alive       = true
     e.squashTimer = 0
     e.shakeTimer  = 0
