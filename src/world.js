@@ -244,7 +244,7 @@ const musicElements = Array.from({ length: 18 }, (_, i) => ({
   scale: 0.6 + Math.random() * 0.7,
   speed: 0.3 + Math.random() * 0.4,
   phase: Math.random() * Math.PI * 2,
-  alpha: 0.12 + Math.random() * 0.18
+  alpha: 0.22 + Math.random() * 0.22
 }))
 
 /**
@@ -253,37 +253,48 @@ const musicElements = Array.from({ length: 18 }, (_, i) => ({
  * @param {number} tick
  */
 function renderBackground(ctx, camera, tick, dt = 0) {
-  // Sky gradient
+  // Twilight sky gradient
   const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H)
-  grad.addColorStop(0, '#FFE4EC')
-  grad.addColorStop(1, '#E8D5F5')
+  grad.addColorStop(0, THEME.skyTop)
+  grad.addColorStop(0.55, THEME.skyMid)
+  grad.addColorStop(1, THEME.skyBottom)
   ctx.fillStyle = grad
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
-  // Stars
-  for (const star of bgStars) {
-    const sx = star.x - camera.x
-    if (sx < -4 || sx > CANVAS_W + 4) continue
-    const alpha = 0.4 + 0.4 * Math.sin(tick * 3 + star.phase)
-    ctx.globalAlpha = alpha
-    ctx.fillStyle = '#CC88AA'
-    ctx.beginPath()
-    ctx.arc(sx, star.y, star.r, 0, Math.PI * 2)
-    ctx.fill()
-  }
-  ctx.globalAlpha = 1
+  // Glowing moon (parallax suave)
+  const moonX = 1060 - camera.x * 0.05
+  const moonY = 110
+  const moonGlow = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, 95)
+  moonGlow.addColorStop(0, 'rgba(255, 226, 214, 0.45)')
+  moonGlow.addColorStop(1, 'rgba(255, 226, 214, 0)')
+  ctx.fillStyle = moonGlow
+  ctx.beginPath()
+  ctx.arc(moonX, moonY, 95, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.fillStyle = '#FFF4E6'
+  ctx.shadowBlur = 24
+  ctx.shadowColor = 'rgba(255, 236, 214, 0.9)'
+  ctx.beginPath()
+  ctx.arc(moonX, moonY, 34, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.shadowBlur = 0
 
-  // Heart-clouds parallax with drift
+  // Twinkling stars
+  for (const star of bgStars) {
+    const sx = ((star.x - camera.x * 0.12) % WORLD_W + WORLD_W) % WORLD_W
+    if (sx < -4 || sx > CANVAS_W + 4) continue
+    const alpha = Math.max(0, 0.4 + 0.5 * Math.sin(tick * 3 + star.phase))
+    drawTwinkle(ctx, sx, star.y, star.r * 1.7, alpha)
+  }
+
+  // Neon heart-clouds parallax with drift
   for (const cloud of heartClouds) {
     cloud.x += (0.8 + cloud.layer * 0.6) * dt
     const offsetX = cloud.layer === 0 ? camera.x * 0.3 : camera.x * 0.6
     if (cloud.x - offsetX > CANVAS_W + 100) cloud.x = offsetX - 120
     const cx = cloud.x - offsetX
     if (cx < -120 || cx > CANVAS_W + 120) continue
-    const opacity = 0.25 + cloud.scale * 0.3
-    if (cloud.layer === 0) ctx.filter = 'blur(2px)'
-    drawHeartCloud(ctx, cx, cloud.y, cloud.scale, opacity)
-    if (cloud.layer === 0) ctx.filter = 'none'
+    drawHeartCloud(ctx, cx, cloud.y, cloud.scale, 0.45 + cloud.scale * 0.3)
   }
 
   // Music elements parallax
@@ -346,21 +357,31 @@ function drawFloatingStar(ctx, phase) {
   ctx.shadowBlur = 0
 }
 
-function drawHeartCloud(ctx, x, y, scale, opacity) {
+function drawHeartCloud(ctx, x, y, scale, opacity = 0.55) {
   const s = 28
   ctx.save()
   ctx.globalAlpha = opacity
-  ctx.fillStyle = '#FFFFFF'
-  ctx.shadowBlur = 18
-  ctx.shadowColor = '#FFB6C1'
   ctx.translate(x, y)
   ctx.scale(scale, scale)
-  ctx.beginPath()
-  ctx.arc(-s * 0.5, -s * 0.2, s * 0.5, Math.PI, 0)
-  ctx.arc( s * 0.5, -s * 0.2, s * 0.5, Math.PI, 0)
-  ctx.bezierCurveTo(s * 1.0, s * 0.3, 0, s * 1.1, 0, s * 1.0)
-  ctx.bezierCurveTo(0, s * 1.1, -s * 1.0, s * 0.3, -s * 1.0, 0)
+  const heartPath = () => {
+    ctx.beginPath()
+    ctx.arc(-s * 0.5, -s * 0.2, s * 0.5, Math.PI, 0)
+    ctx.arc( s * 0.5, -s * 0.2, s * 0.5, Math.PI, 0)
+    ctx.bezierCurveTo(s * 1.0, s * 0.3, 0, s * 1.1, 0, s * 1.0)
+    ctx.bezierCurveTo(0, s * 1.1, -s * 1.0, s * 0.3, -s * 1.0, 0)
+    ctx.closePath()
+  }
+  // corpo escuro translúcido
+  heartPath()
+  ctx.fillStyle = 'rgba(42, 24, 68, 0.55)'
   ctx.fill()
+  // contorno neon rosa com glow
+  ctx.shadowBlur = 14
+  ctx.shadowColor = 'rgba(255, 107, 157, 0.7)'
+  ctx.strokeStyle = 'rgba(255, 134, 162, 0.8)'
+  ctx.lineWidth = 2
+  heartPath()
+  ctx.stroke()
   ctx.restore()
 }
 
@@ -381,23 +402,53 @@ function renderWorld(ctx, camera) {
     const sx = plat.x - camera.x
     if (sx + plat.w < 0 || sx > CANVAS_W) continue
 
-    // 3D bottom border
-    ctx.fillStyle = shadeColor(plat.color, -25)
-    ctx.beginPath()
-    ctx.roundRect(sx + 6, plat.y + plat.h, plat.w - 12, 6, [0, 0, 3, 3])
-    ctx.fill()
+    if (plat.h === 60) {
+      // GROUND — superfície crepuscular com borda neon
+      const g = ctx.createLinearGradient(0, plat.y, 0, plat.y + plat.h)
+      g.addColorStop(0, '#3A2358')
+      g.addColorStop(1, '#1A0F33')
+      ctx.fillStyle = g
+      ctx.beginPath()
+      ctx.roundRect(sx, plat.y, plat.w, plat.h, 6)
+      ctx.fill()
 
-    // Platform with shadow
-    ctx.shadowBlur = 8
-    ctx.shadowColor = 'rgba(0,0,0,0.15)'
-    ctx.fillStyle = plat.color
-    ctx.beginPath()
-    ctx.roundRect(sx, plat.y, plat.w, plat.h, 6)
-    ctx.fill()
-    ctx.shadowBlur = 0
+      // borda superior neon rosa
+      ctx.save()
+      ctx.shadowBlur = 18
+      ctx.shadowColor = '#FF6B9D'
+      ctx.fillStyle = '#FF6B9D'
+      ctx.beginPath()
+      ctx.roundRect(sx, plat.y, plat.w, 4, 2)
+      ctx.fill()
+      ctx.restore()
 
-    // Decoração no topo da plataforma
-    if (plat.h === 20) {
+      // brilho sutil sob a borda
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.10)'
+      ctx.fillRect(sx, plat.y + 4, plat.w, 2)
+    } else {
+      // FLOATING — plataforma com glow neon
+      ctx.save()
+      ctx.shadowBlur = 16
+      ctx.shadowColor = plat.color
+      ctx.fillStyle = plat.color
+      ctx.beginPath()
+      ctx.roundRect(sx, plat.y, plat.w, plat.h, 6)
+      ctx.fill()
+      ctx.restore()
+
+      // base inferior mais escura
+      ctx.fillStyle = shadeColor(plat.color, -50)
+      ctx.beginPath()
+      ctx.roundRect(sx + 6, plat.y + plat.h, plat.w - 12, 5, [0, 0, 3, 3])
+      ctx.fill()
+
+      // faixa de luz no topo
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'
+      ctx.beginPath()
+      ctx.roundRect(sx + 3, plat.y + 2, plat.w - 6, 4, 2)
+      ctx.fill()
+
+      // Decoração no topo da plataforma
       const decorSpacing = 32
       const decorCount = Math.floor(plat.w / decorSpacing)
       for (let d = 0; d < decorCount; d++) {
@@ -439,11 +490,11 @@ function renderWorld(ctx, camera) {
 
   ctx.shadowBlur = 0
 
-  // Ground heart decorations
-  const groundY = 660
+  // Ground heart decorations (padrão brilhante dentro da superfície)
+  const groundY = 674
   const startX = Math.floor(camera.x / 32) * 32
   const endX   = startX + CANVAS_W + 32
-  const heartColors = ['#FF6B9D', '#FFB6C1']
+  const heartColors = ['#FF6B9D', '#FF85A2']
   for (let wx = startX; wx < endX; wx += 32) {
     const sx = wx - camera.x
     const color = heartColors[Math.floor(wx / 32) % 2]
@@ -452,8 +503,10 @@ function renderWorld(ctx, camera) {
 }
 
 function drawTinyHeart(ctx, x, y, s, color) {
-  ctx.fillStyle = color
   ctx.save()
+  ctx.fillStyle = color
+  ctx.shadowBlur = 7
+  ctx.shadowColor = color
   ctx.translate(x, y)
   ctx.beginPath()
   ctx.moveTo(0, s * 0.3)

@@ -22,6 +22,14 @@ function renderPlayer(ctx, camera, tick) {
 function drawSnorlax(ctx, x, y, frame, tick) {
   const bob = frame === 2 ? 0 : Math.sin(tick * 4) * 1.5
   ctx.save()
+  // Aura quente (rim light)
+  const aura = ctx.createRadialGradient(x + 28, y, 12, x + 28, y, 78)
+  aura.addColorStop(0, 'rgba(255, 133, 162, 0.22)')
+  aura.addColorStop(1, 'rgba(255, 133, 162, 0)')
+  ctx.fillStyle = aura
+  ctx.beginPath()
+  ctx.arc(x + 28, y, 78, 0, Math.PI * 2)
+  ctx.fill()
   ctx.translate(x + 28, y + bob)
 
   ctx.shadowBlur = 12
@@ -198,15 +206,17 @@ function drawPitorro(ctx, x, y, name, tick, isLiam) {
   ctx.arc(x, yDraw + 12, 4, 0, Math.PI)
   ctx.fill()
 
-  // NAME LABEL
+  // NAME LABEL — vidro escuro com borda neon
   ctx.font = '10px Arial'
   const tw = ctx.measureText(name).width
-  ctx.globalAlpha = 0.85
-  ctx.fillStyle = '#FFFFFF'
+  ctx.fillStyle = 'rgba(18, 10, 36, 0.75)'
   roundRect(ctx, x - tw / 2 - 8, yDraw + 30, tw + 16, 20, 4)
   ctx.fill()
-  ctx.globalAlpha = 1
-  ctx.fillStyle = '#CC6080'
+  ctx.strokeStyle = 'rgba(255, 134, 162, 0.55)'
+  ctx.lineWidth = 1
+  roundRect(ctx, x - tw / 2 - 8, yDraw + 30, tw + 16, 20, 4)
+  ctx.stroke()
+  ctx.fillStyle = '#FFD9E3'
   ctx.textAlign = 'center'
   ctx.fillText(name, x, yDraw + 44)
 
@@ -247,8 +257,8 @@ function drawEnemy(ctx, e, tick) {
   ctx.translate(shakeX, 0)
 
   // BODY
-  ctx.shadowBlur = 6
-  ctx.shadowColor = '#7B5FA0'
+  ctx.shadowBlur = 10
+  ctx.shadowColor = '#B58BE0'
   ctx.fillStyle = '#9B7FBF'
   ctx.beginPath()
   ctx.roundRect(0, 0, 32, 32, 5)

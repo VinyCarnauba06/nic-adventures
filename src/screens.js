@@ -46,8 +46,8 @@ function renderPauseScreen(ctx, tick) {
   const alpha = Math.min(pauseScreen.timer * 4, 1) * 0.72
   ctx.save()
   ctx.fillStyle = pauseScreen.isLiam
-    ? `rgba(20, 10, 0, ${alpha})`
-    : `rgba(180, 20, 80, ${alpha})`
+    ? `rgba(34, 22, 8, ${alpha})`
+    : `rgba(50, 10, 44, ${alpha})`
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
   const progress = pauseScreen.timer / pauseScreen.duration
@@ -97,14 +97,18 @@ function renderPauseScreen(ctx, tick) {
   const barW = 300
   const barX = CANVAS_W / 2 - barW / 2
   const barY = CANVAS_H - 60
-  ctx.fillStyle = 'rgba(255,255,255,0.2)'
+  ctx.fillStyle = 'rgba(255,255,255,0.12)'
   ctx.beginPath()
   roundRect(ctx, barX, barY, barW, 6, 3)
   ctx.fill()
+  ctx.save()
+  ctx.shadowBlur = 10
+  ctx.shadowColor = pauseScreen.isLiam ? '#FFD700' : '#FF6B9D'
   ctx.fillStyle = pauseScreen.isLiam ? '#FFD700' : '#FF91A4'
   ctx.beginPath()
   roundRect(ctx, barX, barY, barW * progress, 6, 3)
   ctx.fill()
+  ctx.restore()
 
   ctx.restore()
   ctx.globalAlpha = 1
@@ -191,10 +195,11 @@ function renderWinScreen(ctx, winTimer, tick) {
     return
   }
 
-  // 2. BACKGROUND
+  // 2. BACKGROUND — crepúsculo
   const bg = ctx.createLinearGradient(0, 0, 0, CANVAS_H)
-  bg.addColorStop(0, '#C2185B')
-  bg.addColorStop(1, '#E91E8C')
+  bg.addColorStop(0, THEME.skyTop)
+  bg.addColorStop(0.55, THEME.skyMid)
+  bg.addColorStop(1, THEME.skyBottom)
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
@@ -247,7 +252,7 @@ function renderWinScreen(ctx, winTimer, tick) {
   const cardX = CANVAS_W / 2 - 180
   const cardY = winCardY
   ctx.shadowBlur = 30
-  ctx.shadowColor = 'rgba(0,0,0,0.5)'
+  ctx.shadowColor = 'rgba(255, 215, 0, 0.35)'
   ctx.fillStyle = '#111111'
   ctx.strokeStyle = '#FFD700'
   ctx.lineWidth = 2
@@ -304,8 +309,8 @@ function renderWinScreen(ctx, winTimer, tick) {
   ctx.fillText('Gift Card', CANVAS_W / 2, cardY + 165)
 
   // 5. TYPEWRITER TEXTS
-  ctx.shadowBlur = 8
-  ctx.shadowColor = '#C2185B'
+  ctx.shadowBlur = 12
+  ctx.shadowColor = 'rgba(255, 107, 157, 0.9)'
   ctx.font = 'bold 22px Georgia'
   ctx.fillStyle = '#FFFFFF'
   ctx.textAlign = 'center'
@@ -330,20 +335,15 @@ function renderWinScreen(ctx, winTimer, tick) {
     ctx.translate(-CANVAS_W / 2, -(btnY + btnH / 2))
 
     ctx.shadowBlur = 20
-    ctx.shadowColor = 'rgba(194, 24, 91, 0.5)'
+    ctx.shadowColor = 'rgba(233, 99, 139, 0.75)'
 
-    ctx.fillStyle = '#FFFFFF'
+    ctx.fillStyle = '#E9638B'
     roundRect(ctx, btnX, btnY, btnW, btnH, 26)
     ctx.fill()
 
-    ctx.strokeStyle = '#E91E8C'
-    ctx.lineWidth = 2.5
-    roundRect(ctx, btnX, btnY, btnW, btnH, 26)
-    ctx.stroke()
-
     ctx.shadowBlur = 0
     ctx.font = 'bold 18px Georgia'
-    ctx.fillStyle = '#E91E8C'
+    ctx.fillStyle = '#FFFFFF'
     ctx.textAlign = 'center'
     ctx.fillText('Jogar de novo 💕', CANVAS_W / 2, btnY + 33)
 
@@ -356,25 +356,42 @@ function renderWinScreen(ctx, winTimer, tick) {
  * @param {number} tick
  */
 function renderGameOverOverlay(ctx, tick) {
-  ctx.fillStyle = 'rgba(0,0,0,0.62)'
+  ctx.fillStyle = 'rgba(8, 4, 20, 0.66)'
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
-  ctx.font = '44px Georgia'
-  ctx.fillStyle = '#FFB6C1'
-  ctx.textAlign = 'center'
-  ctx.fillText('Game Over 💔', CANVAS_W / 2 + Math.sin(tick * 20) * 2, 300)
+  drawGlassPanel(ctx, CANVAS_W / 2 - 220, 240, 440, 240, 16, { blur: 20 })
 
-  ctx.font = '20px Georgia'
-  ctx.fillStyle = '#FFFFFF'
+  ctx.font = '44px Georgia'
+  ctx.shadowBlur = 18
+  ctx.shadowColor = 'rgba(255, 107, 157, 0.9)'
+  ctx.fillStyle = '#FF85A2'
+  ctx.textAlign = 'center'
+  ctx.fillText('Game Over 💔', CANVAS_W / 2 + Math.sin(tick * 20) * 2, 310)
+  ctx.shadowBlur = 0
+
+  ctx.font = 'italic 19px Georgia'
+  ctx.fillStyle = 'rgba(255, 226, 236, 0.9)'
   ctx.fillText('Tente de novo, mi amor! 💕', CANVAS_W / 2, 360)
 
-  ctx.fillStyle = '#E91E8C'
+  ctx.save()
+  ctx.shadowBlur = 16
+  ctx.shadowColor = 'rgba(233, 99, 139, 0.7)'
+  ctx.fillStyle = '#E9638B'
   roundRect(ctx, CANVAS_W / 2 - 100, 400, 200, 48, 24)
   ctx.fill()
+  ctx.restore()
   ctx.font = 'bold 17px Georgia'
   ctx.fillStyle = '#FFFFFF'
   ctx.fillText('Tentar de novo', CANVAS_W / 2, 430)
 }
+
+// Estrelas fixas da tela inicial (determinísticas, sem flicker)
+const startScreenStars = Array.from({ length: 60 }, (_, i) => ({
+  x: (i * 231 + 47) % CANVAS_W,
+  y: (i * 137 + 31) % 520,
+  r: 1 + ((i * 7) % 10) / 5,
+  phase: (i * 1.7) % (Math.PI * 2)
+}))
 
 /**
  * @param {CanvasRenderingContext2D} ctx
@@ -391,83 +408,101 @@ function renderStartScreen(ctx, tick) {
     }
   }
 
-  // 1. Background gradient
+  // 1. Céu crepuscular
   const bg = ctx.createLinearGradient(0, 0, 0, CANVAS_H)
-  bg.addColorStop(0, '#FFE4EC')
-  bg.addColorStop(1, '#E8D5F5')
+  bg.addColorStop(0, THEME.skyTop)
+  bg.addColorStop(0.55, THEME.skyMid)
+  bg.addColorStop(1, THEME.skyBottom)
   ctx.fillStyle = bg
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
-  // 2. Heart-cloud decoration
+  // 2. Estrelas cintilantes
+  for (const st of startScreenStars) {
+    const alpha = Math.max(0, 0.35 + 0.5 * Math.sin(tick * 2 + st.phase))
+    drawTwinkle(ctx, st.x, st.y, st.r * 1.8, alpha)
+  }
+
+  // 3. Nuvens de coração neon
   drawHeartCloud(ctx, 150, 120, 0.6)
   drawHeartCloud(ctx, 1100, 90, 0.5)
   drawHeartCloud(ctx, 600, 60, 0.7)
-  drawHeartCloud(ctx, 900, 200, 0.4)
+  drawHeartCloud(ctx, 980, 230, 0.4)
+  drawHeartCloud(ctx, 300, 300, 0.35)
 
-  // 3. Snorlax idle
+  // 4. Snorlax com aura quente
   const frame = Math.floor(tick / 0.4) % 2
   const bobY = Math.sin(tick * 2) * 4
+  const cx = CANVAS_W / 2
+  const cy = 330
+  const aura = ctx.createRadialGradient(cx, cy, 20, cx, cy, 170)
+  aura.addColorStop(0, 'rgba(255, 133, 162, 0.30)')
+  aura.addColorStop(1, 'rgba(255, 133, 162, 0)')
+  ctx.fillStyle = aura
+  ctx.beginPath()
+  ctx.arc(cx, cy, 170, 0, Math.PI * 2)
+  ctx.fill()
+
   ctx.save()
   ctx.translate(CANVAS_W / 2, 300)
   ctx.scale(1.6, 1.6)
   ctx.translate(-CANVAS_W / 2, -300)
-  drawSnorlax(ctx, CANVAS_W / 2 - 28, 260, frame, tick)
+  drawSnorlax(ctx, CANVAS_W / 2 - 28, 260 + bobY, frame, tick)
   ctx.restore()
 
-  // 4. Title
-  ctx.shadowBlur = 16
-  ctx.shadowColor = '#FF91A4'
-  ctx.font = 'bold 52px Georgia'
-  ctx.fillStyle = '#C2185B'
+  // Corações flutuando ao redor da personagem
+  const orbitHearts = [
+    { ox: -150, oy: -40, s: 9 },
+    { ox:  150, oy: -70, s: 7 },
+    { ox: -110, oy:  90, s: 6 },
+    { ox:  120, oy:  80, s: 8 },
+  ]
+  orbitHearts.forEach((h, i) => {
+    const hx = cx + h.ox
+    const hy = cy + h.oy + Math.sin(tick * 2 + i * 1.5) * 10
+    drawTinyHeart(ctx, hx, hy, h.s, i % 2 === 0 ? '#FF6B9D' : '#FF85A2')
+  })
+
+  // 5. Título com bloom rosa
+  ctx.shadowBlur = 28
+  ctx.shadowColor = 'rgba(255, 107, 157, 0.9)'
+  ctx.font = 'bold 56px Georgia'
+  ctx.fillStyle = '#FFFFFF'
   ctx.textAlign = 'center'
-  ctx.fillText('💕 Nic Adventure 💕', CANVAS_W / 2, 160)
+  ctx.fillText('💕 Nic Adventure 💕', CANVAS_W / 2, 150)
   ctx.shadowBlur = 0
 
-  // 5. Subtitle
-  ctx.font = '18px Georgia'
-  ctx.fillStyle = '#8B3A62'
-  ctx.fillText('Colete os 5 pitorros especiais e esmague todos os haters para descobrir seu presente, Amor!', CANVAS_W / 2, 220)
+  // 6. Subtítulo
+  ctx.font = 'italic 17px Georgia'
+  ctx.fillStyle = 'rgba(255, 226, 236, 0.85)'
+  ctx.fillText('Colete os 5 pitorros especiais e esmague todos os haters para descobrir seu presente, Amor!', CANVAS_W / 2, 210)
 
-  // Bilhetinho
+  // 7. Bilhetinho — painel de vidro com borda brilhante
   const noteX = CANVAS_W / 2 - 280
   const noteY = 420
   ctx.save()
   ctx.translate(CANVAS_W / 2, noteY + 36)
   ctx.rotate(-0.012)
   ctx.translate(-CANVAS_W / 2, -(noteY + 36))
-  ctx.shadowBlur = 16
-  ctx.shadowColor = 'rgba(180,40,100,0.15)'
-  ctx.fillStyle = '#FFF0F5'
-  roundRect(ctx, noteX, noteY, 560, 72, 8)
-  ctx.fill()
-  ctx.fillStyle = '#FFB6C1'
-  roundRect(ctx, noteX, noteY, 560, 6, 8)
-  ctx.fill()
-  ctx.shadowBlur = 0
+  drawGlassPanel(ctx, noteX, noteY, 560, 72, 12, { blur: 18 })
   ctx.font = 'italic 15px Georgia'
-  ctx.fillStyle = '#8B3A62'
+  ctx.fillStyle = '#FFD9E3'
   ctx.textAlign = 'left'
   const fullText = LETTER_TEXT.slice(0, letterIndex)
   const breakAt = 62
   const line1 = fullText.slice(0, breakAt)
   const line2 = fullText.length > breakAt ? fullText.slice(breakAt) : ''
-  ctx.fillText(line1, noteX + 16, noteY + 28)
-  ctx.fillText(line2, noteX + 16, noteY + 50)
+  ctx.fillText(line1, noteX + 18, noteY + 28)
+  ctx.fillText(line2, noteX + 18, noteY + 50)
   ctx.restore()
 
-  // 6. Controls hint
-  ctx.font = '14px Arial'
-  ctx.fillStyle = '#AA6688'
-  ctx.fillText('⬅️ ➡️  mover  ·  Espaço pular', CANVAS_W / 2, 580)
-
-  // 7. Start button
+  // 8. Botão começar
   const scale = 1 + Math.sin(tick * 3) * 0.03
   ctx.save()
   ctx.translate(CANVAS_W / 2, 540)
   ctx.scale(scale, scale)
-  ctx.shadowBlur = 20
-  ctx.shadowColor = '#FF91A4'
-  ctx.fillStyle = '#E91E8C'
+  ctx.shadowBlur = 24
+  ctx.shadowColor = 'rgba(233, 99, 139, 0.8)'
+  ctx.fillStyle = '#E9638B'
   roundRect(ctx, -100, -24, 200, 48, 24)
   ctx.fill()
   ctx.shadowBlur = 0
@@ -477,9 +512,32 @@ function renderStartScreen(ctx, tick) {
   ctx.fillText('Começar 💕', 0, 7)
   ctx.restore()
 
-  // Botão fullscreen
+  // 9. Controles — keycaps
+  const hintY = 600
+  ctx.font = 'bold 13px Arial'
+  ctx.textAlign = 'center'
+
+  const keycap = (x, y, label, w) => {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.10)'
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)'
+    ctx.lineWidth = 1
+    roundRect(ctx, x - w / 2, y - 14, w, 26, 6)
+    ctx.fill()
+    ctx.stroke()
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillText(label, x, y + 4)
+  }
+  keycap(CANVAS_W / 2 - 130, hintY, '←', 34)
+  keycap(CANVAS_W / 2 - 92, hintY, '→', 34)
+  ctx.fillStyle = 'rgba(255, 226, 236, 0.75)'
+  ctx.fillText('mover', CANVAS_W / 2 - 34, hintY + 4)
+  keycap(CANVAS_W / 2 + 44, hintY, 'Espaço', 68)
+  ctx.fillStyle = 'rgba(255, 226, 236, 0.75)'
+  ctx.fillText('pular', CANVAS_W / 2 + 108, hintY + 4)
+
+  // 10. Botão fullscreen
   ctx.font = '22px Arial'
-  ctx.fillStyle = 'rgba(194, 24, 91, 0.6)'
+  ctx.fillStyle = 'rgba(255, 226, 236, 0.55)'
   ctx.textAlign = 'right'
   ctx.fillText('⛶', CANVAS_W - 20, CANVAS_H - 16)
 }

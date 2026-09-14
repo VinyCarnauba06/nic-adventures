@@ -66,6 +66,11 @@ function renderParticles(ctx, cameraX = 0) {
     ctx.translate(p.x - cameraX, p.y)
     ctx.rotate(p.angle)
 
+    if (p.type === 'heart' || p.type === 'star') {
+      ctx.shadowBlur = 8
+      ctx.shadowColor = p.color
+    }
+
     if (p.type === 'heart') {
       drawParticleHeart(ctx, p.size, p.color)
     } else if (p.type === 'star') {
