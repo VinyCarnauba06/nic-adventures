@@ -39,7 +39,8 @@ const player = {
   invTimer: 0,
   coyoteTimer: 0,
   jumpBuffer: 0,
-  hp: 3
+  hp: 3,
+  landSquash: 0
 }
 
 let lastCheckpoint = { x: 80, y: 580, hp: 3 }
@@ -56,7 +57,8 @@ function initPlayer() {
     invTimer: 0,
     coyoteTimer: 0,
     jumpBuffer: 0,
-    hp: 3
+    hp: 3,
+    landSquash: 0
   })
   lastCheckpoint = { x: 80, y: 580, hp: 3 }
 }
@@ -77,6 +79,7 @@ function respawnAtCheckpoint() {
 function updatePlayer(dt, keys) {
   // 1. TIMERS
   player.invTimer    = Math.max(0, player.invTimer - dt)
+  player.landSquash  = Math.max(0, player.landSquash - dt)
   player.coyoteTimer = Math.max(0, player.coyoteTimer - dt)
   player.jumpBuffer  = Math.max(0, player.jumpBuffer - dt)
 
@@ -114,11 +117,18 @@ function updatePlayer(dt, keys) {
   player.vy += GRAVITY * dt
 
   // 6. MOVE + COLLIDE (axis-separated)
+  const fallSpeed = player.vy
   player.onGround = false
   player.x += player.vx * dt
   resolveAxisX(player, getPlatforms())
   player.y += player.vy * dt
   resolveAxisY(player, getPlatforms())
+
+  // pouso com squash + poeira (visual)
+  if (!prevOnGround && player.onGround && fallSpeed > 400) {
+    player.landSquash = 0.18
+    spawnDust(player.x + player.w / 2, player.y + player.h - 4)
+  }
 
   // coyote time: if was on ground last frame but not now
   if (prevOnGround && !player.onGround && player.vy > 0) {

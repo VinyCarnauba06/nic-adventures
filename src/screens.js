@@ -57,6 +57,12 @@ function renderPauseScreen(ctx, tick) {
 
   ctx.globalAlpha = opacity
 
+  // painel de vidro atrás do conteúdo
+  drawGlassPanel(ctx, CANVAS_W / 2 - 290, 235, 580, 300, 20, {
+    blur: 24,
+    border: pauseScreen.isLiam ? THEME.glassBorderGold : THEME.glassBorder
+  })
+
   // Pitorro grande centralizado
   drawPitorro(ctx, CANVAS_W / 2, CANVAS_H / 2 - 80, pauseScreen.name, tick, pauseScreen.isLiam)
 
@@ -470,6 +476,8 @@ function renderStartScreen(ctx, tick) {
   ctx.textAlign = 'center'
   ctx.fillText('💕 Nic Adventure 💕', CANVAS_W / 2, 150)
   ctx.shadowBlur = 0
+  drawTwinkle(ctx, CANVAS_W / 2 - 268, 122, 7 + Math.sin(tick * 3) * 2, 0.8)
+  drawTwinkle(ctx, CANVAS_W / 2 + 262, 136, 6 + Math.sin(tick * 2.4) * 2, 0.7)
 
   // 6. Subtítulo
   ctx.font = 'italic 17px Georgia'

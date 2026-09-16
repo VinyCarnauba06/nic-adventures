@@ -45,10 +45,10 @@ function spawnParticles(x, y, type, count) {
 function updateParticles(dt) {
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i]
-    p.vy += 400 * dt
+    if (p.type !== 'dust') p.vy += 400 * dt
     p.x  += p.vx * dt
     p.y  += p.vy * dt
-    p.angle += p.va * dt
+    if (p.type !== 'dust') p.angle += p.va * dt
     p.life  -= dt
     if (p.life <= 0) particles.splice(i, 1)
   }
@@ -75,6 +75,17 @@ function renderParticles(ctx, cameraX = 0) {
       drawParticleHeart(ctx, p.size, p.color)
     } else if (p.type === 'star') {
       drawParticleStar(ctx, p.size, p.color)
+    } else if (p.type === 'dust') {
+      const prog = 1 - p.life / p.maxLife
+      const r = p.size * (1 + prog * 1.6)
+      const a = (p.life / p.maxLife) * 0.3
+      const dg = ctx.createRadialGradient(0, 0, 0, 0, 0, r)
+      dg.addColorStop(0, `rgba(216, 196, 235, ${a})`)
+      dg.addColorStop(1, 'rgba(216, 196, 235, 0)')
+      ctx.fillStyle = dg
+      ctx.beginPath()
+      ctx.arc(0, 0, r, 0, Math.PI * 2)
+      ctx.fill()
     } else if (p.type === 'confetti') {
       ctx.fillStyle = p.color
       ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2)
@@ -97,6 +108,10 @@ function drawParticleHeart(ctx, size, color) {
   ctx.moveTo(0, s * 3)
   ctx.bezierCurveTo(-s * 5, -s * 2, -s * 10, s * 2, 0,    s * 8)
   ctx.bezierCurveTo( s * 10, s * 2,  s * 5, -s * 2, 0,    s * 3)
+  ctx.fill()
+  ctx.fillStyle = 'rgba(255,255,255,0.45)'
+  ctx.beginPath()
+  ctx.ellipse(-s * 3.5, s * 1.5, s * 1.8, s * 1.1, -0.6, 0, Math.PI * 2)
   ctx.fill()
 }
 
@@ -152,6 +167,25 @@ function spawnWinRain(canvasW) {
       color: HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)],
       size: 10 + Math.random() * 14,
       angle: Math.random() * Math.PI * 2, va: (Math.random() - 0.5) * 1.5
+    })
+  }
+}
+
+// Poeira de pouso (visual)
+function spawnDust(x, y) {
+  for (let i = 0; i < 6; i++) {
+    particles.push({
+      x: x + (Math.random() - 0.5) * 22,
+      y: y + (Math.random() - 0.5) * 4,
+      vx: (Math.random() - 0.5) * 90,
+      vy: -(20 + Math.random() * 40),
+      life: 0.4 + Math.random() * 0.3,
+      maxLife: 0.7,
+      type: 'dust',
+      color: 'rgba(216, 196, 235, 1)',
+      size: 5 + Math.random() * 6,
+      angle: 0,
+      va: 0
     })
   }
 }

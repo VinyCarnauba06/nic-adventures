@@ -63,6 +63,17 @@ function renderHUD(ctx) {
   ctx.lineTo(CANVAS_W, 64.5)
   ctx.stroke()
 
+  // 1b. pílulas de vidro dos grupos
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.06)'
+  roundRect(ctx, 8, 8, 200, 26, 13)
+  ctx.fill()
+  roundRect(ctx, 8, 38, 150, 24, 12)
+  ctx.fill()
+  roundRect(ctx, CANVAS_W / 2 - 66, 8, 132, 26, 13)
+  ctx.fill()
+  roundRect(ctx, CANVAS_W - 162, 8, 154, 26, 13)
+  ctx.fill()
+
   // 2. Pitorro counter
   ctx.font = 'bold 16px Georgia'
   ctx.textAlign = 'left'

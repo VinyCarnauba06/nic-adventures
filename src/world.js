@@ -252,6 +252,34 @@ const musicElements = Array.from({ length: 18 }, (_, i) => ({
  * @param {{x:number}} camera
  * @param {number} tick
  */
+/**
+ * Camada de silhueta de colinas com parallax.
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {{x:number}} camera
+ * @param {number} parallax
+ * @param {number} baseY
+ * @param {number} amp
+ * @param {string} color
+ * @param {number} seed
+ */
+function drawHillLayer(ctx, camera, parallax, baseY, amp, color, seed) {
+  const offset = camera.x * parallax
+  ctx.fillStyle = color
+  ctx.beginPath()
+  ctx.moveTo(-4, CANVAS_H)
+  const step = 32
+  for (let sx = -step; sx <= CANVAS_W + step; sx += step) {
+    const wx = sx + offset
+    const hy = baseY
+      - Math.sin(wx * 0.0042 + seed) * amp
+      - Math.sin(wx * 0.013 + seed * 2.3) * (amp * 0.35)
+    ctx.lineTo(sx, hy)
+  }
+  ctx.lineTo(CANVAS_W + step, CANVAS_H)
+  ctx.closePath()
+  ctx.fill()
+}
+
 function renderBackground(ctx, camera, tick, dt = 0) {
   // Twilight sky gradient
   const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H)
@@ -286,6 +314,29 @@ function renderBackground(ctx, camera, tick, dt = 0) {
     const alpha = Math.max(0, 0.4 + 0.5 * Math.sin(tick * 3 + star.phase))
     drawTwinkle(ctx, sx, star.y, star.r * 1.7, alpha)
   }
+
+  // Estrela cadente
+  const shootT = (tick % 9) / 9
+  if (shootT < 0.1) {
+    const p     = shootT / 0.1
+    const sxs   = 260 + p * 620
+    const sys   = 70 + p * 240
+    const trail = ctx.createLinearGradient(sxs - 90 * p, sys - 35 * p, sxs, sys)
+    trail.addColorStop(0, 'rgba(255,255,255,0)')
+    trail.addColorStop(1, 'rgba(255,255,255,0.9)')
+    ctx.strokeStyle = trail
+    ctx.lineWidth = 2
+    ctx.lineCap = 'round'
+    ctx.beginPath()
+    ctx.moveTo(sxs - 90 * p, sys - 35 * p)
+    ctx.lineTo(sxs, sys)
+    ctx.stroke()
+    drawTwinkle(ctx, sxs, sys, 5, 1)
+  }
+
+  // Silhuetas de colinas (parallax)
+  drawHillLayer(ctx, camera, 0.12, 600, 85, 'rgba(56, 34, 96, 0.5)', 1.7)
+  drawHillLayer(ctx, camera, 0.25, 650, 55, 'rgba(38, 22, 70, 0.75)', 4.2)
 
   // Neon heart-clouds parallax with drift
   for (const cloud of heartClouds) {
@@ -425,12 +476,28 @@ function renderWorld(ctx, camera) {
       // brilho sutil sob a borda
       ctx.fillStyle = 'rgba(255, 255, 255, 0.10)'
       ctx.fillRect(sx, plat.y + 4, plat.w, 2)
+
+      // poeira estelar na superfície
+      const dotStartX = Math.floor(camera.x / 56) * 56
+      for (let wx2 = dotStartX; wx2 < dotStartX + CANVAS_W + 56; wx2 += 56) {
+        const dx2  = wx2 - camera.x
+        const seed = Math.floor(wx2 / 56)
+        const dy2  = 20 + ((seed * 37) % 28)
+        const dr2  = ((seed * 13) % 3) + 1
+        ctx.fillStyle = 'rgba(255, 200, 225, 0.12)'
+        ctx.beginPath()
+        ctx.arc(dx2, plat.y + dy2, dr2, 0, Math.PI * 2)
+        ctx.fill()
+      }
     } else {
       // FLOATING — plataforma com glow neon
+      const pg = ctx.createLinearGradient(0, plat.y, 0, plat.y + plat.h)
+      pg.addColorStop(0, shadeColor(plat.color, 15))
+      pg.addColorStop(1, shadeColor(plat.color, -12))
       ctx.save()
       ctx.shadowBlur = 16
       ctx.shadowColor = plat.color
-      ctx.fillStyle = plat.color
+      ctx.fillStyle = pg
       ctx.beginPath()
       ctx.roundRect(sx, plat.y, plat.w, plat.h, 6)
       ctx.fill()
